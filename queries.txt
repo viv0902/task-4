@@ -1,0 +1,83 @@
+##
+
+use salesdb;
+
+show tables;
+    
+select *
+from customers;
+
+-- Retrieve each customer's name, country, and score.
+
+select 
+	firstname,
+    country,
+    score
+
+##
+
+use salesdb;
+
+-- RETRIEVE CUSTOMERS WITH A SCORE NOT EQUAL TO ZERO
+
+SELECT *
+FROM customers
+WHERE score != 0;
+
+-- RETRIEVE CUSTOMERS FROM GERMANY
+
+SELECT *
+FROM customers
+WHERE country = 'Germany';
+
+##
+
+use salesdb;
+
+-- FIND total score for each country
+
+SELECT 
+    country, SUM(score) AS total_score
+FROM
+    customers
+GROUP BY country;
+
+##
+
+SELECT productid, product,price
+FROM products
+WHERE productid IN (
+    SELECT productid
+    FROM products
+    GROUP BY productid
+    HAVING SUM(price) > 1
+);
+
+##
+
+use salesdb;
+
+SELECT 
+    *
+FROM
+    customers AS C
+	INNER JOIN
+    orders AS O ON C.customerid = O.customerid;
+
+##
+
+use salesdb;
+
+CREATE VIEW product_sales AS
+SELECT p.productid, p.product, SUM(price) AS total_units_sold
+FROM products p 
+JOIN  orders O on p.productid = O.productid
+GROUP BY p.productid, p.product;
+
+##
+
+USE salesdb;
+
+CREATE INDEX idx_orders_customer_id ON orders(customerid);
+CREATE INDEX idx_products_category_price ON products(category, price);
+
